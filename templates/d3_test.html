@@ -1,0 +1,86 @@
+<!doctype html>
+<head>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+</head>
+<body>
+<div id="viz"></div>
+<script>
+
+var findNode = function(id) {
+  for (var i = nodes.length - 1; i >= 0; i--) {
+    if (nodes[i].id == id) {
+      return nodes[i]
+    }
+  };
+}
+
+nodes = [
+  {
+    id: 'BATS',
+    x: 100,
+    y: 100,
+    createTime: 0,
+    destroyTime: 40
+  },
+  {
+    id: 'NYSE',
+    x: 200,
+    y: 200,
+    createTime: 0,
+    destroyTime: 40
+  }
+]
+
+messages = [
+  {
+    startTime: 10,
+    endTime: 20,
+    startNode: 'BATS',
+    endNode: 'NYSE',
+    quantity: 30 
+  },
+  {
+    startTime: 25,
+    endTime: 30,
+    startNode: 'BATS',
+    endNode: 'NYSE',
+    quantity: 40
+  }
+]
+
+var svg = d3.select('#viz').append('svg')
+  .attr('width', 1000)
+  .attr('height', 1000)
+
+svg.selectAll('node')
+  .data(nodes)
+  .enter()
+  .append('circle')
+  .attr('r', 40)
+  .style('stroke', 'black')
+  .style('stroke-width', 4)
+  .style('fill', 'green')
+  .attr('cx', function(d) { return d.x; })
+  .attr('cy', function(d) { return d.y; })
+  
+
+svg.selectAll('message')
+  .data(messages)
+  .enter()
+  .append('circle')
+  .attr('r', function(d) { d.quantity; })
+  .style('stroke', 'black')
+  .style('stroke-width', 1)
+  .style('fill', 'purple')
+  .attr('cx', function(d) {
+    return findNode(d.startNode).x;
+  })
+  .attr('cy', function(d) {
+    return findNode(d.startNode).y;
+  })
+
+svg.selectAll('node').transition()
+  .duration(2000)
+  .attr('r', function(d) { return Math.sqrt(d * scale); });
+
+</script>
